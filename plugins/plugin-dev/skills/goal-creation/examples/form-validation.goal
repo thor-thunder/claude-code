@@ -1,0 +1,168 @@
+# Example: Form Validation with Testing
+
+## Goal Statement
+
+```
+/goal build contact form with email validation,
+until form validates email format and submits to /api/contact endpoint,
+verified by testing form with valid and invalid emails confirming appropriate behavior,
+while don't modify the existing page header or layout,
+or stop after 15 turns
+```
+
+## Breakdown
+
+### Task
+"build contact form with email validation"
+- Specific work to do
+- Includes both form building AND validation
+
+### Finish Line
+"until form validates email format and submits to /api/contact endpoint"
+- Concrete, measurable outcome
+- Two specific requirements: validation + submission
+- Can be verified without ambiguity
+
+### Verification
+"tested by testing form with valid and invalid emails confirming appropriate behavior"
+- Manual testing approach
+- Tests both success and failure paths
+- Specific: valid email (should submit) and invalid email (should show error)
+- Can be done without a test suite
+
+### Boundaries
+"don't modify the existing page header or layout"
+- Clear constraint on what to avoid
+- Prevents scope creep to entire page redesign
+- Allows focused work on just the form
+
+### Limit
+"or stop after 15 turns"
+- Realistic for form implementation work
+- Enough time to handle edge cases
+- Prevents infinite refinement
+
+## Real-World Variants
+
+### With Automated Testing
+
+```
+/goal build contact form with email validation,
+until form validates email and submits to /api/contact,
+verified by running form tests with 10 valid and 10 invalid email addresses,
+while don't modify page header or layout,
+or stop after 20 turns
+```
+
+**Why this variant:**
+- More rigorous
+- Tests more email formats
+- Prevents regression
+- Automated, repeatable
+
+### With Multiple Validation Fields
+
+```
+/goal build contact form,
+until form validates email, phone, and required message field,
+verified by testing form with empty fields (shows errors) and valid data (submits),
+while don't modify page header or styling,
+or stop after 20 turns
+```
+
+**Why this variant:**
+- Defines all validation requirements upfront
+- Tests both error and success paths
+- More complete form functionality
+
+### Multi-Phase: Build Then Enhance
+
+**Phase 1:**
+```
+/goal build contact form,
+until form accepts name, email, message and displays submission confirmation,
+verified by filling form and confirming submission message displays,
+while don't add complex validation beyond required fields,
+or stop after 12 turns
+```
+
+**Phase 2:**
+```
+/goal add form validation,
+until email is validated and message has character limit,
+verified by testing invalid email (error shows) and long message (error shows),
+while don't modify form layout,
+or stop after 10 turns
+```
+
+**Why this variant:**
+- Phase 1 focuses on basic functionality
+- Phase 2 adds validation refinement
+- Clear phase boundaries
+- Easier to verify each phase
+
+## Common Issues and Fixes
+
+### Issue: Too Vague Finish Line
+
+❌ **Bad:**
+```
+until form works and validation is good
+```
+
+✅ **Good:**
+```
+until form validates email format using regex and submits to /api/contact endpoint
+```
+
+---
+
+### Issue: Missing Verification Details
+
+❌ **Bad:**
+```
+verified by testing the form
+```
+
+✅ **Good:**
+```
+verified by testing with valid email (example@test.com), invalid email (invalid-email),
+and empty email field, confirming appropriate messages display
+```
+
+---
+
+### Issue: Boundaries Too Loose
+
+❌ **Bad:**
+```
+while keeping it simple
+```
+
+✅ **Good:**
+```
+while don't modify the existing page layout or header styling,
+and only add JavaScript for validation
+```
+
+---
+
+## Testing Checklist
+
+When verifying this goal:
+
+**Valid Email Tests:**
+- [ ] test@example.com (submits)
+- [ ] user.name@company.co.uk (submits)
+- [ ] first+last@domain.com (submits)
+
+**Invalid Email Tests:**
+- [ ] notanemail (shows error)
+- [ ] @domain.com (shows error)
+- [ ] user@ (shows error)
+
+**Edge Cases:**
+- [ ] Empty email field (shows error)
+- [ ] Submit button disabled until form is valid
+- [ ] Confirmation message displays after submission
+- [ ] Form appears on the page without breaking existing layout

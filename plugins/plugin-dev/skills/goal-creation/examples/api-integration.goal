@@ -1,0 +1,231 @@
+# Example: API Integration with Verification
+
+## Goal Statement
+
+```
+/goal integrate Stripe payment API,
+until payment processing works end-to-end with test transactions,
+verified by making test charge and confirming charge appears in Stripe dashboard,
+while don't modify existing checkout page layout,
+or stop after 25 turns
+```
+
+## Breakdown
+
+### Task
+"integrate Stripe payment API"
+- Specific integration work
+- Well-known third-party service
+- Clear scope (one payment provider)
+
+### Finish Line
+"until payment processing works end-to-end with test transactions"
+- End-to-end scope (not just "API configured")
+- Includes actual transaction processing
+- Works with test data, not production
+- Can be verified independently
+
+### Verification
+"verified by making test charge and confirming charge appears in Stripe dashboard"
+- Concrete verification steps
+- Uses Stripe's own verification tool (dashboard)
+- Objective: charge either appears or doesn't
+- Can be repeated multiple times
+
+### Boundaries
+"don't modify existing checkout page layout"
+- Prevents unnecessary UI changes
+- Allows focus on API integration
+- Clarifies scope of work
+
+### Limit
+"or stop after 25 turns"
+- Realistic for API integration work
+- Accounts for authentication setup, error handling, testing
+
+## Real-World Variants
+
+### With Testing Requirements
+
+```
+/goal integrate Stripe payment API,
+until successful payments create charges and failed payments show error messages,
+verified by running payment integration tests with mock Stripe responses and real test charges,
+while don't modify checkout page layout or payment form styling,
+or stop after 30 turns
+```
+
+**Why this variant:**
+- Tests both success and failure paths
+- Uses mocks for reliability
+- Tests real charges confirm integration
+- More comprehensive verification
+
+### Multi-Phase: Setup Then Webhooks
+
+**Phase 1: Basic Integration**
+```
+/goal integrate Stripe payment processing,
+until charges can be created via API,
+verified by creating test charges via code and confirming they appear in Stripe dashboard,
+while don't modify checkout page,
+or stop after 20 turns
+```
+
+**Phase 2: Handle Webhooks**
+```
+/goal implement Stripe webhooks,
+until payment confirmations are received and processed,
+verified by triggering test webhooks and confirming orders are updated in database,
+while don't modify payment processing logic,
+or stop after 15 turns
+```
+
+**Why this variant:**
+- Separates payment creation from confirmation
+- Each phase is independently verifiable
+- Clearer scope for each phase
+- Easier to debug if one phase fails
+
+### With Error Handling
+
+```
+/goal integrate Stripe payment API,
+until payments work and payment errors are handled gracefully,
+verified by making successful test charge, failed charge (invalid card), and timeout,
+confirming error messages display correctly in each case,
+while don't modify page layout,
+or stop after 25 turns
+```
+
+**Why this variant:**
+- Tests happy path AND error scenarios
+- Handles common failure modes
+- Verification is comprehensive
+- More production-ready
+
+## Real-World Example: Detailed Verification Steps
+
+### Test Case 1: Successful Payment
+```
+1. Retrieve Stripe test card (4242 4242 4242 4242)
+2. Fill payment form with test card details
+3. Submit payment
+4. Confirm charge appears in Stripe test dashboard
+5. Confirm order created in database
+```
+
+### Test Case 2: Invalid Card
+```
+1. Use invalid Stripe test card (4000 0000 0000 0002)
+2. Attempt payment submission
+3. Confirm error message displays
+4. Confirm no charge in Stripe dashboard
+5. Confirm order NOT created in database
+```
+
+### Test Case 3: Webhook Processing
+```
+1. Trigger Stripe test webhook event (charge.succeeded)
+2. Confirm webhook handler processes event
+3. Confirm order status updated in database
+4. Confirm confirmation email sent (if applicable)
+```
+
+## Common Issues and Fixes
+
+### Issue: Vague Finish Line
+
+❌ **Bad:**
+```
+until Stripe integration is complete
+```
+
+✅ **Good:**
+```
+until charges can be created via the payment endpoint and appear in Stripe dashboard
+```
+
+---
+
+### Issue: Insufficient Verification
+
+❌ **Bad:**
+```
+verified by confirming the integration works
+```
+
+✅ **Good:**
+```
+verified by creating test charge through the API endpoint and confirming:
+- Charge appears in Stripe test dashboard
+- Order created in database with correct amount
+- Customer email received confirmation (if applicable)
+```
+
+---
+
+### Issue: Missing Error Scenarios
+
+❌ **Bad:**
+```
+verified by making successful test charges
+```
+
+✅ **Good:**
+```
+verified by testing successful charges (Visa test card),
+failed charges (invalid card), and timeout scenarios,
+confirming appropriate error messages in each case
+```
+
+---
+
+### Issue: Unclear Boundaries
+
+❌ **Bad:**
+```
+while keeping things simple
+```
+
+✅ **Good:**
+```
+while don't modify existing checkout page layout,
+don't add unnecessary features beyond basic payment processing,
+and use Stripe's test environment only
+```
+
+---
+
+## Verification Checklist
+
+When verifying this goal:
+
+**Basic Functionality:**
+- [ ] Stripe API key is configured
+- [ ] Payment endpoint exists and accepts payment data
+- [ ] Test charge can be created
+- [ ] Charge appears in Stripe dashboard
+
+**Test Cases:**
+- [ ] ✅ Valid test card (4242...) creates charge
+- [ ] ✅ Invalid card (4000...) shows error
+- [ ] ✅ Expired card shows error
+- [ ] ✅ Insufficient funds shows error
+
+**Data Verification:**
+- [ ] Order created with correct amount
+- [ ] Stripe charge ID stored in database
+- [ ] Currency handled correctly
+- [ ] Decimal precision correct (cents vs dollars)
+
+**Error Handling:**
+- [ ] Invalid requests return proper error codes
+- [ ] Network errors handled gracefully
+- [ ] Timeout scenarios don't create duplicate charges
+- [ ] User-facing error messages are clear
+
+**Security (Basic Verification):**
+- [ ] Never logs full card numbers
+- [ ] API calls use HTTPS
+- [ ] Stripe key not exposed in frontend code
