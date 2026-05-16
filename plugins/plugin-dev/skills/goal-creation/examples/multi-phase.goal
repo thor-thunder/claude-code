@@ -1,0 +1,291 @@
+# Example: Multi-Phase Goal for Complex Work
+
+## Scenario
+
+Building a user dashboard that requires:
+1. Creating API endpoints (backend)
+2. Building UI components (frontend)
+3. Integrating the two together
+4. Adding real-time updates
+
+This work is too large for one goal and benefits from phase separation.
+
+---
+
+## Phase 1: API Endpoints
+
+```
+/goal build dashboard API endpoints,
+until endpoints return user profile, activity feed, and settings data,
+verified by calling endpoints with curl and confirming valid JSON responses with all required fields,
+while don't modify existing authentication system or user schema,
+or stop after 20 turns
+```
+
+### Why Phase 1 Exists
+- Backend work is independent from frontend
+- Needs clear data structure before UI is built
+- Can be tested without frontend code
+- Establishes contract for Phase 2
+
+### Verification
+- `/api/user/profile` returns `{id, name, email, avatar}`
+- `/api/user/activity` returns array of activities with timestamps
+- `/api/user/settings` returns user preferences
+
+### Boundaries
+- Don't change how users authenticate
+- Don't modify the users table
+- Only add new endpoints, don't modify existing ones
+
+---
+
+## Phase 2: Dashboard UI Components
+
+```
+/goal build dashboard UI components,
+until dashboard displays user info, activity feed, and settings panels,
+verified by loading dashboard page and confirming all three sections display with correct layout,
+while don't modify existing page header, don't make API calls yet (use mock data),
+or stop after 18 turns
+```
+
+### Why Phase 2 Exists
+- Separates UI work from API integration
+- Allows testing UI with mock data
+- Prevents blockers (if API not ready, UI can still progress)
+- Clear scope: just component structure, not API integration
+
+### Verification
+- Dashboard page loads without errors
+- Profile section displays user name, email, avatar
+- Activity section displays list of activities
+- Settings section displays toggles and preferences
+- Layout is responsive on mobile and desktop
+
+### Boundaries
+- Use mock data, not real API calls
+- Don't modify page header
+- Don't style beyond basic layout
+
+---
+
+## Phase 3: Connect UI to API
+
+```
+/goal integrate API with dashboard UI,
+until dashboard fetches real data from API endpoints,
+verified by loading dashboard and confirming data from Phase 1 API endpoints displays correctly,
+while maintain UI layout from Phase 2, don't add new features,
+or stop after 15 turns
+```
+
+### Why Phase 3 Exists
+- Connects independent work from Phases 1 and 2
+- Tests that API and UI work together
+- Easier to debug (API and UI already known to work individually)
+- Clear integration point
+
+### Verification
+- Dashboard loads user profile from `/api/user/profile`
+- Activity feed loads from `/api/user/activity`
+- Settings loads from `/api/user/settings`
+- Data updates when you refresh page
+- Handles API errors gracefully
+
+### Boundaries
+- Don't modify API responses
+- Don't modify UI layout
+- Don't add new features
+
+---
+
+## Phase 4: Real-Time Updates (Optional)
+
+```
+/goal add real-time dashboard updates,
+until dashboard updates when user activity occurs (without refresh),
+verified by triggering activity event and confirming activity feed updates within 2 seconds,
+while don't modify API structure or existing dashboard UI,
+or stop after 20 turns
+```
+
+### Why Phase 4 is Separate
+- Adds websocket or polling layer
+- Can be added after Phase 3 is complete
+- Optional enhancement, not core functionality
+- Different technology (real-time vs REST)
+
+### Verification
+- Open dashboard in two browser tabs
+- Trigger activity in tab 1 (like commenting)
+- Confirm tab 2 updates within 2 seconds without refresh
+- Settings updates reflect immediately across tabs
+
+### Boundaries
+- Don't modify the REST API
+- Don't change how data is structured
+- Only add WebSocket/polling for real-time features
+
+---
+
+## Why This Multi-Phase Structure Works
+
+### Without Phases (One Large Goal)
+```
+/goal build complete user dashboard with real-time updates,
+until users see profile, activity, settings with live updates,
+verified by testing all features work...
+[Goal is too large and vague - hard to verify, hard to manage]
+```
+
+**Problems:**
+- Too many moving parts at once
+- Hard to verify end-to-end
+- If one piece fails, entire goal is at risk
+- 50+ turns needed (too long)
+
+### With Phases (Recommended)
+```
+Phase 1: API endpoints (20 turns)
+↓
+Phase 2: UI components (18 turns)
+↓
+Phase 3: Connect them (15 turns)
+↓
+Phase 4: Add real-time (20 turns)
+```
+
+**Benefits:**
+- Each phase has clear, testable goals
+- Build in logical order (backend → frontend → integration → enhancement)
+- Can pause after Phase 3 if Phase 4 not needed
+- Easier to debug (each phase validates independently)
+- Faster verification (smaller scope per phase)
+- Team can work on phases in parallel
+
+---
+
+## Real-World Variations
+
+### Variation: Different Team Members
+
+**Person A (Backend):**
+```
+Phase 1: API endpoints
+```
+
+**Person B (Frontend):**
+```
+Phase 2: UI components (with mock data)
+```
+
+Both can work in parallel. They sync up at Phase 3.
+
+---
+
+### Variation: Database Migration First
+
+**Phase 0 (if needed):**
+```
+/goal migrate user data to dashboard schema,
+until all user profiles have new required fields,
+verified by querying database and confirming all users have dashboard-required fields,
+or stop after 10 turns
+```
+
+Then proceed with Phases 1-4.
+
+---
+
+### Variation: Incremental Feature Rollout
+
+**Phase 1:** API endpoints
+**Phase 2:** UI components
+**Phase 3:** Connect UI to API
+**Phase 4:** Add real-time updates
+**Phase 5:** Add notifications
+**Phase 6:** Add analytics
+
+Each phase is independently deployable.
+
+---
+
+## Testing Across Phases
+
+### Phase 1 Testing (Backend)
+```bash
+curl http://localhost:3000/api/user/profile
+curl http://localhost:3000/api/user/activity
+curl http://localhost:3000/api/user/settings
+```
+
+### Phase 2 Testing (Frontend)
+```
+1. Load dashboard page
+2. Verify all sections render
+3. Verify mock data displays
+```
+
+### Phase 3 Testing (Integration)
+```
+1. Load dashboard
+2. Confirm real API data displays (not mock data)
+3. Refresh page
+4. Confirm data persists and updates
+```
+
+### Phase 4 Testing (Real-Time)
+```
+1. Open dashboard in two browsers
+2. Trigger event in one browser
+3. Confirm other browser updates within 2 seconds
+```
+
+---
+
+## Common Questions
+
+### Q: Can I skip a phase?
+**A:** Usually no. If Phase 1 (API) isn't complete, Phase 3 (integration) will fail. Skip Phase 4 (real-time) if it's not needed for your use case.
+
+### Q: What if Phase 1 takes longer than expected?
+**A:** Increase the turn limit for Phase 1, or split it further:
+- Phase 1a: Profile and settings APIs
+- Phase 1b: Activity feed API
+
+### Q: Can phases be done in parallel?
+**A:** Partially. Phase 2 (UI) can use mock data while Phase 1 (API) is being built. But Phase 3 (integration) requires both Phase 1 and Phase 2 complete.
+
+### Q: How do I know if a multi-phase goal is the right choice?
+**A:** Use multi-phase when:
+- [ ] Single goal would need 30+ turns
+- [ ] Work can be logically divided
+- [ ] Different technologies involved (backend/frontend)
+- [ ] Earlier phases can be independently verified
+- [ ] Different people/teams can work on phases
+
+---
+
+## Checklist for Multi-Phase Goals
+
+**Structure:**
+- [ ] Each phase has clear, testable finish line
+- [ ] Phases are in logical order (dependencies first)
+- [ ] Each phase has distinct verification method
+- [ ] Phase boundaries are clear
+
+**Scope:**
+- [ ] Each phase is 10-25 turns (not too large or small)
+- [ ] No phase depends on incomplete previous phase
+- [ ] Phases don't overlap in scope
+
+**Verification:**
+- [ ] Phase 1 can be verified without Phase 2
+- [ ] Phase 2 can use mock/stub data while Phase 1 progresses
+- [ ] Phase 3+ verify integration, not just individual parts
+
+**Communication:**
+- [ ] Names clearly indicate phase purpose
+- [ ] Each phase goal is understandable standalone
+- [ ] Team knows the overall structure and timeline
