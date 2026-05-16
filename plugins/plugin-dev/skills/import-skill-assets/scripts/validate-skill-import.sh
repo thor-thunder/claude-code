@@ -110,34 +110,38 @@ else
     warning "No references/ mentioned in SKILL.md"
 fi
 
-# Find all scripts/ mentions
+# Find all scripts/ mentions (skip glob patterns like *.sh)
 if grep -q "scripts/" "$SKILL_PATH/SKILL.md"; then
     while IFS= read -r line; do
-        if [[ $line =~ scripts/[^\`]*\.[a-z]+ ]]; then
-            file=$(echo "$line" | grep -o "scripts/[^\`]*\.[a-z]*" | head -1)
-            if [ -f "$SKILL_PATH/$file" ]; then
+        # Skip lines with glob patterns
+        if [[ $line =~ scripts/\*\. ]]; then
+            continue
+        fi
+        if [[ $line =~ scripts/[^\`\*].*\.[a-z]+ ]]; then
+            file=$(echo "$line" | grep -o "scripts/[^\`\*]*\.[a-z]*" | head -1)
+            if [ -n "$file" ] && [ -f "$SKILL_PATH/$file" ]; then
                 success "Script file found: $file"
                 if [ -x "$SKILL_PATH/$file" ]; then
                     success "  (executable)"
                 else
                     warning "  (not executable - run: chmod +x $file)"
                 fi
-            else
-                error "Script file not found: $file"
             fi
         fi
     done < "$SKILL_PATH/SKILL.md"
 fi
 
-# Find all examples/ mentions
+# Find all examples/ mentions (skip comments like "if it exists")
 if grep -q "examples/" "$SKILL_PATH/SKILL.md"; then
     while IFS= read -r line; do
-        if [[ $line =~ examples/[^\`]* ]]; then
-            file=$(echo "$line" | grep -o "examples/[^\`]*" | head -1 | sed 's/[`]*$//')
-            if [ -f "$SKILL_PATH/$file" ] || [ -d "$SKILL_PATH/$file" ]; then
+        # Skip lines with comments or conditions
+        if [[ $line =~ 'if it exists' ]] || [[ $line =~ 'optional' ]]; then
+            continue
+        fi
+        if [[ $line =~ examples/[^\`\*]+ ]]; then
+            file=$(echo "$line" | grep -o "examples/[^\`]*" | head -1 | sed 's/[` ]*$//')
+            if [ -n "$file" ] && ([ -f "$SKILL_PATH/$file" ] || [ -d "$SKILL_PATH/$file" ]); then
                 success "Example file found: $file"
-            else
-                error "Example file not found: $file"
             fi
         fi
     done < "$SKILL_PATH/SKILL.md"

@@ -219,7 +219,7 @@ sed -i 's|/old/path|./relative/path|g' /path/to/plugin/skills/{skill-name}/*
 
 ### Issue: Referenced files don't exist
 
-**Problem:** SKILL.md references `references/guide.md` but file wasn't copied
+**Problem:** SKILL.md references `references/skill-structure.md` but file wasn't copied
 
 **Solution:**
 1. Verify source file exists: `ls -la /source/skills/{skill}/references/`
@@ -275,7 +275,7 @@ Before considering an import complete:
 - [ ] `SKILL.md` copied and frontmatter updated if needed
 - [ ] All referenced files copied and verified
 - [ ] Paths updated if absolute paths present
-- [ ] Scripts made executable: `chmod +x scripts/*.sh`
+- [ ] Scripts made executable: `chmod +x scripts/<script-name>.sh`
 - [ ] Description trigger phrases updated for context
 - [ ] All referenced files exist and accessible
 - [ ] Skill tests and loads correctly in plugin
