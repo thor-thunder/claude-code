@@ -2,6 +2,11 @@
 
 Claude Code is an interactive CLI tool and IDE extension for Anthropic's Claude AI, enabling developers to work on software engineering tasks with AI assistance.
 
+## Core Philosophy
+
+* Let AI build it, and iterate by feeling. And all of this without years of technical training required.
+* Interview me relentlessly about every aspect of this plan until we reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one by one.
+
 ## Project Overview
 
 This repository contains the implementation of Claude Code, providing integration with Claude for code editing, analysis, and development workflows. It bridges the gap between AI capabilities and developer productivity tools.
