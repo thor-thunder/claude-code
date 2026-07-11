@@ -3,6 +3,11 @@
     "memory-store": {
       "type": "http",
       "url": "https://beta.memory.store/mcp"
+    },
+    "context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"]
     }
   }
 }
