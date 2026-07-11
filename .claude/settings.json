@@ -24,6 +24,7 @@
     "github@claude-plugins-official": true,
     "feature-dev@claude-plugins-official": true,
     "code-review@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true
+    "frontend-design@claude-plugins-official": true,
+    "context7@context7-marketplace": true
   }
 }
