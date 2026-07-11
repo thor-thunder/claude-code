@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "memory-store": {
+      "type": "http",
+      "url": "https://beta.memory.store/mcp"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "claude-plugin": {
+      "source": {
+        "source": "github",
+        "repo": "julep-ai/memory-store-plugin"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "memory-store@claude-plugin": true
+  }
+}
