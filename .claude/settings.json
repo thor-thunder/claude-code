@@ -14,6 +14,7 @@
     }
   },
   "enabledPlugins": {
-    "memory-store@claude-plugin": true
+    "memory-store@claude-plugin": true,
+    "github@claude-plugins-official": true
   }
 }
